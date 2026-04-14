@@ -322,100 +322,94 @@ body {
     z-index: 100;
 }
 
-/* Dashboard Specific Styles */
+/* Dashboard Refinements */
 .dashboard-page {
-    background-color: #000000; /* Pure black for dashboard */
+    background-color: #000000;
 }
 
-.dashboard-nav {
-    margin-left: 50px !important;
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.btn-logout-small {
-    background: transparent;
-    color: #fff;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 6px 15px;
-    border-radius: 4px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.btn-logout-small:hover {
-    background: #fff;
-    color: #000;
-}
-
-.movie-rows-container {
-    padding-bottom: 100px;
+.search-box {
     position: relative;
-    z-index: 10;
-    margin-top: -100px;
 }
 
-.empty-msg {
-    color: rgba(255,255,255,0.5);
-    font-size: 0.9rem;
-    padding: 20px 0;
+.search-box input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    width: 200px;
+    transition: all 0.3s ease;
 }
 
-/* Dashboard Card Specifics */
-.dashboard-card {
-    min-width: calc(100% / 6 - 10px); /* Approx 6 per row on laptop */
+.search-box input:focus {
+    width: 250px;
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
 }
 
-@media (max-width: 1200px) {
-    .dashboard-card { min-width: calc(100% / 4 - 10px); }
-}
-
-@media (max-width: 768px) {
-    .dashboard-card { min-width: calc(100% / 2.5 - 10px); } /* 2-3 per row on mobile */
-    
-    .movie-rows-container {
-        margin-top: -50px;
-    }
+.dashboard-hero {
+    height: 85vh;
 }
 
 .card-play-icon {
-    width: 40px; 
-    height: 40px;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid #fff;
+    width: 45px;
+    height: 45px;
+    background: rgba(57, 255, 20, 0.8); /* Neon Green play background */
+    border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
-    font-size: 1rem;
-    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #000;
     transition: all 0.3s;
+    box-shadow: 0 0 15px var(--primary-color);
 }
 
 .movie-card:hover .card-play-icon {
-    background: #fff;
-    color: #000;
-    transform: scale(1.1);
-}
-
-/* Category Row Scroll */
-.movie-list {
-    display: flex;
-    gap: 15px;
-    overflow-x: auto;
-    padding: 20px 0 40px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) transparent;
-}
-
-.movie-list::-webkit-scrollbar {
-    height: 4px;
-}
-
-.movie-list::-webkit-scrollbar-thumb {
     background: var(--primary-color);
-    border-radius: 10px;
+    transform: scale(1.2);
+    box-shadow: 0 0 25px var(--primary-color);
+}
+
+/* Row Styling */
+.movie-rows-container {
+    padding: 0 4% 100px;
+    margin-top: -120px;
+}
+
+.category-row {
+    margin-bottom: 40px;
+}
+
+.category-title {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-bottom: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+@media (max-width: 768px) {
+    .search-box input {
+        width: 120px;
+    }
+    .search-box input:focus {
+        width: 150px;
+    }
+    .category-title {
+        font-size: 1.2rem;
+    }
 }
 
 /* Auth Page Premium Styles (Glassmorphism) */

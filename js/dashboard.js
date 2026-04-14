@@ -5,6 +5,7 @@ const playHeroBtn = document.getElementById('play-hero');
 const videoModal = document.getElementById('video-modal');
 const playerContainer = document.getElementById('player-container');
 const closeModal = document.querySelector('.close-modal');
+const searchInput = document.getElementById('search-input');
 
 // Category Lists
 const categoryLists = {
@@ -14,17 +15,24 @@ const categoryLists = {
     hindi: document.getElementById('hindi-list')
 };
 
-// --- Auth Check ---
+let allMovies = []; // Store movies for searching
+
+// --- Auth Check (Protected Route) ---
 async function checkUserSession() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (typeof supabaseClient === 'undefined') {
+        console.error("Supabase client not loaded.");
+        return;
+    }
+
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
     
-    if (!session) {
-        // Not logged in, redirect to auth page
+    if (error || !session) {
+        console.log("No active session, redirecting to login.");
         window.location.href = 'auth.html';
         return;
     }
     
-    // User is logged in, fetch data
+    console.log("Active session found for:", session.user.email);
     fetchDashboardMovies();
 }
 
@@ -40,7 +48,8 @@ async function fetchDashboardMovies() {
         return;
     }
 
-    displayCategorizedMovies(data);
+    allMovies = data;
+    displayCategorizedMovies(allMovies);
 }
 
 function displayCategorizedMovies(movies) {
@@ -49,21 +58,24 @@ function displayCategorizedMovies(movies) {
         if (list) list.innerHTML = '';
     });
 
-    if (!movies || movies.length === 0) return;
+    if (!movies || movies.length === 0) {
+        Object.values(categoryLists).forEach(list => {
+            if (list) list.innerHTML = '<p class="empty-msg">Halkan weli filim laguma soo darin.</p>';
+        });
+        return;
+    }
 
-    // Set Hero (Latest movie)
-    updateHero(movies[0]);
+    // Set Hero (Latest movie) - only on initial load or if not searching
+    if (movies.length === allMovies.length) {
+        updateHero(movies[0]);
+    }
 
     movies.forEach(movie => {
         const movieCard = createMovieCard(movie);
-        const category = movie.category.toLowerCase();
+        const category = movie.category ? movie.category.toLowerCase() : 'other';
         
-        // Match category to list
         if (categoryLists[category]) {
             categoryLists[category].appendChild(movieCard);
-        } else {
-            // Fallback for categories not explicitly in our list but in DB
-            // We could add a 'Others' row or ignore
         }
     });
 
@@ -104,8 +116,30 @@ function updateHero(movie) {
     }
 }
 
+// --- Search Logic ---
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        if (term === '') {
+            displayCategorizedMovies(allMovies);
+            return;
+        }
+
+        const filtered = allMovies.filter(movie => 
+            movie.title.toLowerCase().includes(term) || 
+            (movie.description && movie.description.toLowerCase().includes(term))
+        );
+        displayCategorizedMovies(filtered);
+    });
+}
+
 // --- Player Logic ---
 function openPlayer(url) {
+    if (!url) {
+        alert("Filimkan video-giisa lama helin.");
+        return;
+    }
+
     let embedUrl = url;
     
     if (url.includes('youtube.com/watch?v=')) {
@@ -134,15 +168,24 @@ function openPlayer(url) {
 if (closeModal) {
     closeModal.onclick = () => {
         videoModal.style.display = 'none';
-        playerContainer.innerHTML = ''; 
+        if (playerContainer) playerContainer.innerHTML = ''; 
         document.body.style.overflow = 'auto'; 
     };
 }
 
+window.onclick = (event) => {
+    if (event.target == videoModal) {
+        videoModal.style.display = 'none';
+        if (playerContainer) playerContainer.innerHTML = '';
+        document.body.style.overflow = 'auto';
+    }
+};
+
 // --- Logout ---
 if (logoutBtn) {
     logoutBtn.onclick = async () => {
-        await supabaseClient.auth.signOut();
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) console.error("Logout error:", error);
         window.location.href = 'index.html';
     };
 }
