@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapMovie | Maamulaha</title>
+    <link rel="stylesheet" href="./style.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/supabase.js"></script>
+</head>
+<body class="admin-page">
+    <header class="header scrolled">
+        <div class="logo">SNAP<span>MOVIE</span></div>
+        <nav class="nav">
+            <a href="./index.html">Guriga</a>
+        </nav>
+    </header>
+
+    <main class="admin-wrapper">
+        <!-- Login Card -->
+        <section id="login-section" class="login-card">
+            <h2>Soo Gal Maamulaha</h2>
+            <p>Fadlan gali macluumaadkaaga si aad u maamusho filimada.</p>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">Email-ka</label>
+                    <input type="email" id="email" placeholder="email@tusaale.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Furaha (Password)</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-admin-login">SOO GAL</button>
+                <p id="login-error" class="error-msg"></p>
+            </form>
+        </section>
+
+        <!-- Post Movie Form (Initially Hidden) -->
+        <section id="admin-form-section" class="admin-form fade-in" style="display: none;">
+            <div class="admin-header">
+                <h2>Daabac Filim Cusub</h2>
+                <button id="logout-btn" class="btn-logout">Ka Bax (Logout)</button>
+            </div>
+            <form id="movie-form">
+                <div class="form-group">
+                    <label for="title">Cinwaanka Filimka</label>
+                    <input type="text" id="title" placeholder="Gali cinwaanka" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Sharraxaadda</label>
+                    <textarea id="description" rows="3" placeholder="Gali sharraxaadda filimka" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Qaybta (Category)</label>
+                    <select id="category" required>
+                        <option value="recap">Filimadii Recap-ka</option>
+                        <option value="new">Filimadii Cusub</option>
+                        <option value="action">Action</option>
+                        <option value="musalsal">Musalsal</option>
+                        <option value="hindi">Hindi</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="thumbnail">Thumbnail URL (Sawirka)</label>
+                    <input type="url" id="thumbnail" placeholder="https://tusaale.com/sawir.jpg" required>
+                </div>
+                <div class="form-group">
+                    <label for="video">Video URL (YouTube/TikTok)</label>
+                    <input type="url" id="video" placeholder="https://youtube.com/watch?v=..." required>
+                </div>
+                <button type="submit" class="btn btn-primary-admin">DAABAC FILIMKA</button>
+            </form>
+
+            <hr class="divider">
+
+            <!-- Manage Movies List -->
+            <div class="admin-manage">
+                <h3>Maamul Filimadii Hore</h3>
+                <div id="admin-movie-list" class="movie-manager-list">
+                    <p>Loading...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="./js/admin.js"></script>
+</body>
+</html>

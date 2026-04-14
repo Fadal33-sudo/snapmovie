@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapMovie | Netflix Style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/supabase.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">SNAP<span>MOVIE</span></div>
+        <nav class="nav">
+            <a href="./index.html" class="active">Guriga</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="hero-tag">FILIMKA SNAP</span>
+                <h1 id="hero-title">Filim La Soo Bandhigay</h1>
+                <p id="hero-desc">Baro filimadii ugu dambeeyay iyo kuwa ugu xiisaha badan. SnapMovie waxay kuu keentaa madadaalo tayo sare leh oo farahaaga ku jirta.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="play-hero">CIYAAR HADDA</button>
+                    <button class="btn btn-secondary">MACLUUMAAD DHEERAAD AH</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="movie-rows" id="movie-rows">
+            <!-- Recap Movies Row -->
+            <section class="category-row">
+                <h2 class="category-title">Filimadii Recap-ka</h2>
+                <div class="movie-list" id="recap-movies">
+                    <!-- Movies will be injected here -->
+                </div>
+            </section>
+
+            <!-- New Releases Row -->
+            <section class="category-row">
+                <h2 class="category-title">Filimadii Cusub</h2>
+                <div class="movie-list" id="new-releases">
+                    <!-- Movies will be injected here -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="player-container"></div>
+        </div>
+    </div>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapMovie | Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./js/supabase.js"></script>
+</head>
+<body class="dashboard-page">
+    <header class="header">
+        <div class="logo">SNAP<span>MOVIE</span></div>
+        <nav class="nav dashboard-nav">
+            <a href="./dashboard.html" class="active">Guriga</a>
+            <a href="#musalsal">Musalsal</a>
+            <a href="#action">Action</a>
+            <a href="#hindi">Hindi</a>
+            <a href="#chinese">Chinese</a>
+        </nav>
+        <div class="nav-right">
+            <button id="logout-btn" class="btn-logout-small">Ka Bax</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="hero dashboard-hero">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="hero-tag">S SNAPMOVIE ORIGINAL</span>
+                <h1 id="hero-title">Filim La Soo Bandhigay</h1>
+                <p id="hero-desc">Ku raaxayso filimadii ugu dambeeyay ee tayada sare leh.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" id="play-hero">CIYAAR HADDA</button>
+                    <button class="btn btn-secondary">MACLUUMAAD DHEERAAD AH</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movie Categories -->
+        <div class="movie-rows-container">
+            <!-- Recap-ka Maanta -->
+            <section class="category-row" id="recap-section">
+                <h2 class="category-title">Recap-ka Maanta</h2>
+                <div class="movie-list" id="recap-list">
+                    <p class="empty-msg">Halkan weli filim laguma soo darin.</p>
+                </div>
+            </section>
+
+            <!-- Filimada Action-ka -->
+            <section class="category-row" id="action">
+                <h2 class="category-title">Filimada Action-ka ah</h2>
+                <div class="movie-list" id="action-list">
+                    <p class="empty-msg">Halkan weli filim laguma soo darin.</p>
+                </div>
+            </section>
+
+            <!-- Musalsallada Cusub -->
+            <section class="category-row" id="musalsal">
+                <h2 class="category-title">Musalsallada Cusub</h2>
+                <div class="movie-list" id="musalsal-list">
+                    <p class="empty-msg">Halkan weli filim laguma soo darin.</p>
+                </div>
+            </section>
+
+            <!-- Filimada Hindiga -->
+            <section class="category-row" id="hindi">
+                <h2 class="category-title">Filimada Hindiga</h2>
+                <div class="movie-list" id="hindi-list">
+                    <p class="empty-msg">Halkan weli filim laguma soo darin.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="player-container"></div>
+        </div>
+    </div>
+
+    <script src="./js/dashboard.js"></script>
+</body>
+</html>
