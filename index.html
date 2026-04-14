@@ -15,9 +15,13 @@
 <body>
     <header class="header">
         <div class="logo">SNAP<span>MOVIE</span></div>
-        <nav class="nav">
+        <nav class="nav" id="main-nav">
             <a href="./index.html" class="active">Guriga</a>
+            <!-- Dynamic links will be added here -->
         </nav>
+        <div class="nav-right" id="nav-auth-container">
+            <a href="auth.html" class="nav-link" id="auth-link">GASHO</a>
+        </div>
     </header>
 
     <main>
@@ -35,16 +39,34 @@
         </section>
 
         <div class="movie-rows" id="movie-rows">
-            <!-- Recap Movies Row -->
-            <section class="category-row">
+            <!-- Recap Movies Row (Visible to all) -->
+            <section class="category-row" id="recap-section">
                 <h2 class="category-title">Filimadii Recap-ka</h2>
                 <div class="movie-list" id="recap-movies">
                     <!-- Movies will be injected here -->
                 </div>
             </section>
 
-            <!-- New Releases Row -->
-            <section class="category-row">
+            <!-- Protected Categories (Initially Hidden) -->
+            <div id="protected-categories" style="display: none;">
+                <section class="category-row" id="musalsal">
+                    <h2 class="category-title">Musalsallada Cusub</h2>
+                    <div class="movie-list" id="musalsal-movies"></div>
+                </section>
+
+                <section class="category-row" id="action">
+                    <h2 class="category-title">Filimada Action-ka ah</h2>
+                    <div class="movie-list" id="action-movies"></div>
+                </section>
+
+                <section class="category-row" id="hindi">
+                    <h2 class="category-title">Filimada Hindiga</h2>
+                    <div class="movie-list" id="hindi-movies"></div>
+                </section>
+            </div>
+
+            <!-- New Releases Row (Visible to all) -->
+            <section class="category-row" id="new-releases-section">
                 <h2 class="category-title">Filimadii Cusub</h2>
                 <div class="movie-list" id="new-releases">
                     <!-- Movies will be injected here -->
@@ -53,7 +75,8 @@
         </div>
     </main>
 
-    <!-- Video Modal -->
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
     <div id="video-modal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>

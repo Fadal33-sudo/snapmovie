@@ -82,13 +82,8 @@ if (authForm) {
 
 function redirectToHome() {
     const urlParams = new URLSearchParams(window.location.search);
-    const redirect = urlParams.get('redirect');
-    
-    if (redirect) {
-        window.location.href = redirect;
-    } else {
-        window.location.href = 'dashboard.html';
-    }
+    const redirect = urlParams.get('redirect') || 'index.html'; // Default to home page
+    window.location.href = redirect;
 }
 
 // Check if already logged in

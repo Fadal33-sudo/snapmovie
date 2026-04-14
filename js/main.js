@@ -2,16 +2,26 @@
 const header = document.querySelector('.header');
 const recapList = document.getElementById('recap-movies');
 const newList = document.getElementById('new-releases');
+const musalsalList = document.getElementById('musalsal-movies');
+const actionList = document.getElementById('action-movies');
+const hindiList = document.getElementById('hindi-movies');
+const protectedCategories = document.getElementById('protected-categories');
+const navAuthContainer = document.getElementById('nav-auth-container');
+const mainNav = document.getElementById('main-nav');
 const videoModal = document.getElementById('video-modal');
 const playerContainer = document.getElementById('player-container');
 const closeModal = document.querySelector('.close-modal');
 const playHeroBtn = document.getElementById('play-hero');
+const toast = document.getElementById('toast');
+
+// --- State ---
+let currentUser = null;
 
 // --- Functions ---
 
 // 1. Fetch Movies from Supabase
 async function fetchMovies() {
-    if (!supabaseClient) {
+    if (typeof supabaseClient === 'undefined') {
         console.warn("Supabase is not configured.");
         return;
     }
@@ -31,24 +41,37 @@ async function fetchMovies() {
 
 // 2. Display Movies in Category Rows
 function displayMovies(movies) {
-    if (!recapList || !newList) return;
-    
-    recapList.innerHTML = '';
-    newList.innerHTML = '';
+    const lists = {
+        recap: recapList,
+        new: newList,
+        musalsal: musalsalList,
+        action: actionList,
+        hindi: hindiList
+    };
+
+    // Clear all lists
+    Object.values(lists).forEach(list => {
+        if (list) list.innerHTML = '';
+    });
+
+    if (!movies || movies.length === 0) return;
+
+    // Set Hero Featured Movie (First movie in list)
+    updateHero(movies[0]);
 
     movies.forEach(movie => {
         const movieCard = createMovieCard(movie);
-        if (movie.category === 'recap') {
+        const category = movie.category ? movie.category.toLowerCase() : '';
+        
+        if (lists[category]) {
+            lists[category].appendChild(movieCard);
+        } else if (category === 'recap') {
             recapList.appendChild(movieCard);
-        } else if (movie.category === 'new') {
+        } else {
+            // Default to new releases if category unknown
             newList.appendChild(movieCard);
         }
     });
-
-    // Set Hero Featured Movie (First movie in list)
-    if (movies && movies.length > 0) {
-        updateHero(movies[0]);
-    }
 }
 
 // 3. Create Movie Card Element
@@ -80,41 +103,96 @@ function updateHero(movie) {
     }
 }
 
-// --- NEW: Play Logic with Auth Check ---
-async function handlePlay(url) {
-    console.log("Play triggered for:", url);
-    
-    if (typeof supabaseClient === 'undefined' || !supabaseClient) {
-        console.error("Supabase client not found!");
-        window.location.href = 'auth.html?redirect=index.html';
-        return;
-    }
+// 5. Auth State Handling
+async function setupAuth() {
+    if (typeof supabaseClient === 'undefined') return;
 
-    try {
-        // Use getSession but also wait a tiny bit if it's null initially
-        let { data, error } = await supabaseClient.auth.getSession();
-        let session = data?.session;
+    // Listen for auth changes
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        currentUser = session?.user || null;
+        updateUIForAuth(currentUser);
         
-        if (error || !session) {
-            console.log("No session found, redirecting to login.");
-            // Store the URL the user wants to play so we can auto-play after login
-            localStorage.setItem('pendingPlayUrl', url || '');
-            window.location.href = 'auth.html?redirect=index.html';
-        } else {
-            console.log("Session found, opening player.");
-            if (url) {
-                openPlayer(url);
-            } else {
-                alert("Filimkan diyaar ma ahan hadda.");
+        if (event === 'SIGNED_IN') {
+            showToast("Ku soo dhawaaw SnapMovie!");
+            // Check for pending play
+            const pendingUrl = localStorage.getItem('pendingPlayUrl');
+            if (pendingUrl) {
+                localStorage.removeItem('pendingPlayUrl');
+                openPlayer(pendingUrl);
             }
         }
-    } catch (err) {
-        console.error("Auth check error:", err);
-        window.location.href = 'auth.html?redirect=index.html';
+    });
+
+    // Initial check
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    currentUser = session?.user || null;
+    updateUIForAuth(currentUser);
+}
+
+function updateUIForAuth(user) {
+    if (user) {
+        // Logged In State
+        protectedCategories.style.display = 'block';
+        
+        // Update Navbar
+        navAuthContainer.innerHTML = `
+            <div class="user-profile">
+                <span class="user-email">${user.email.split('@')[0]}</span>
+                <button id="logout-btn" class="btn-logout-small">Ka Bax</button>
+            </div>
+        `;
+        
+        // Add dynamic nav links if not present
+        if (!document.getElementById('nav-musalsal')) {
+            const links = [
+                { id: 'nav-musalsal', text: 'Musalsal', href: '#musalsal' },
+                { id: 'nav-action', text: 'Action', href: '#action' },
+                { id: 'nav-hindi', text: 'Hindi', href: '#hindi' }
+            ];
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.id = link.id;
+                a.href = link.href;
+                a.textContent = link.text;
+                mainNav.appendChild(a);
+            });
+        }
+
+        document.getElementById('logout-btn').onclick = async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        };
+
+    } else {
+        // Logged Out State
+        protectedCategories.style.display = 'none';
+        navAuthContainer.innerHTML = `<a href="auth.html" class="nav-link" id="auth-link">GASHO</a>`;
+        
+        // Remove dynamic nav links
+        ['nav-musalsal', 'nav-action', 'nav-hindi'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        });
     }
 }
 
-// 5. Video Player Logic (YouTube Embed Support)
+// 6. Play Logic
+async function handlePlay(url) {
+    if (!currentUser) {
+        // User not logged in, redirect to auth.html
+        localStorage.setItem('pendingPlayUrl', url || '');
+        window.location.href = `auth.html?redirect=index.html`;
+    } else {
+        // User logged in
+        if (url) {
+            openPlayer(url);
+        } else {
+            alert("Filimkan diyaar ma ahan hadda.");
+        }
+    }
+}
+
+// 7. Video Player Logic
 function openPlayer(url) {
     let embedUrl = url;
     
@@ -141,7 +219,16 @@ function openPlayer(url) {
     }
 }
 
-// 6. Close Modal
+// 8. UI Helpers
+function showToast(message) {
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 if (closeModal) {
     closeModal.onclick = () => {
         videoModal.style.display = 'none';
@@ -158,7 +245,6 @@ window.onclick = (event) => {
     }
 };
 
-// 7. Scroll Header Effect (Netflix style fade)
 window.onscroll = () => {
     if (window.scrollY > 0) {
         header.classList.add('scrolled');
@@ -167,7 +253,6 @@ window.onscroll = () => {
     }
 };
 
-// 8. Immediate Button Listener
 if (playHeroBtn) {
     playHeroBtn.addEventListener('click', () => {
         const url = playHeroBtn.getAttribute('data-video-url');
@@ -177,17 +262,8 @@ if (playHeroBtn) {
 
 // Initialize
 async function init() {
+    await setupAuth();
     await fetchMovies();
-    
-    // Check if there's a pending video to play after login
-    const pendingUrl = localStorage.getItem('pendingPlayUrl');
-    if (pendingUrl) {
-        localStorage.removeItem('pendingPlayUrl');
-        const { data } = await supabaseClient.auth.getSession();
-        if (data?.session) {
-            openPlayer(pendingUrl);
-        }
-    }
 }
 
 init();
